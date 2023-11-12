@@ -1,16 +1,29 @@
-require('dotenv').config
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const bodyParser = require('body-parser')
+const express = require('express');
+const path = require('path');
 
-const PORT = 3000
+const { middleware } = require('./middleware');
+const { connectDB } = require('./config/db');   // Connect to MongoDB
 
-// app.get('/', (req, res) => {
-//     res.send("Hello, world!")
-// })
+const spotifyRouter = require('./routes/spotifyRoutes'); // Import Routes
 
+const { PORT } = process.env;
+
+const app = express();
+
+middleware(app); // Middleware
+
+connectDB(); // Connect to MongoDB
+
+app.use('/api/spotify', spotifyRouter); // Routes
+
+app.use('/', (req,res) => {
+    res.sendFile(path.join(__dirname, './my-project/src/App.jsx'));
+})
+
+app.all('*', (req, res) => {
+    res.redirect('/');
+})
 
 app.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
-})
+    console.log(`Server is running on port ${PORT}`);
+});
