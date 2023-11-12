@@ -13,6 +13,7 @@ const scope = "user-read-private user-read-email";
 exports.login = (req, res) => {
     console.log("Starting Authenticator...");
     const state = randomString(16);
+    console.log(SPOTIFY_CLIENT_ID)
     res.cookie(stateKey, state);
     const queryParams = querystring.stringify({
         client_id: SPOTIFY_CLIENT_ID,
@@ -20,9 +21,9 @@ exports.login = (req, res) => {
         redirect_uri: SPOTIFY_REDIRECT_URI,
         scope: scope,
         state: state,
-    });
+    }, );
     console.log("Redirecting Page...");
-    res.redirect(`https://accounts.spotify.com/authorize?client_id=${queryParams}`);
+    res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 };
 
 exports.callback = async (req, res) => {
